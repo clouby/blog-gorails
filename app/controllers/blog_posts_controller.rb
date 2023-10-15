@@ -6,7 +6,7 @@ class BlogPostsController < ApplicationController
   before_action :set_blog_post, except: %i[index create new]
 
   def index
-    @blog_posts = BlogPost.all
+    @blog_posts = user_signed_in? ? BlogPost.sorted : BlogPost.published.sorted
   end
 
   def show; end
@@ -42,14 +42,11 @@ class BlogPostsController < ApplicationController
   private
 
   def blog_post_params
-    params.require(:blog_post).permit(:title, :body).tap do |blog_post_params|
-      blog_post_params.require(:title)
-      blog_post_params.require(:body)
-    end
+    params.require(:blog_post).permit(:title, :body, :published_at)
   end
 
   def set_blog_post
-    @blog_post = BlogPost.find(params[:id])
+    @blog_post = user_signed_in? ? BlogPost.find(params[:id]) : BlogPost.published.find(params[:id])
   rescue ActiveRecord::RecordNotFound
     redirect_to root_path
   end
