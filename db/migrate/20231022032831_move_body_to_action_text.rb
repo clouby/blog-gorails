@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# class MoveBodyToActionText
 class MoveBodyToActionText < ActiveRecord::Migration[7.1]
   def change
     BlogPost.all.find_each do |blog_post|
